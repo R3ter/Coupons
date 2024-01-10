@@ -1,34 +1,42 @@
 <?php
+
 include "../db/db.php";
 
-header('Content-Type: application/json; charset=utf-8');
+
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    if (!isset($_POST["code"]) || !isset($_POST["couponId"])) {
-        echo json_encode(["status" => "error", "message" => "code and couponId is required"]);
+    if (!isset($_POST["code"]) || !isset($_POST["phone"])) {
+        echo json_encode(["status" => "error", "message" => "code, and phone are required"]);
         exit();
     }
+
     $code = $_POST["code"];
-    $couponId = $_POST["couponId"];
+    $phone = $_POST["phone"];
 
-    $sql = "SELECT * FROM coupon WHERE code = '$code' AND couponId = '$couponId' and isValid = 1";
-    $result = $conn->query($sql);
+    $stmt = $conn->prepare("SELECT * FROM coupon WHERE coupon_code = ? AND phone = ? AND isValid = 1");
+    $stmt->bind_param("ss", $code, $phone);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
     if ($result->num_rows > 0) {
+        $usedResult = $conn->query("SELECT * FROM coupon WHERE coupon_code = '$code' AND phone = '$phone' AND isValid = 0");
 
-        $sql = "UPDATE coupon SET isValid = 0 WHERE code = '$code' AND couponId = '$couponId'";
-        $conn->query($sql);
+        if ($usedResult->num_rows > 0) {
+            echo json_encode(["status" => "error", "message" => "Coupon has already been used"]);
+            exit();
+        }
 
-        echo json_encode(["status" => "success", "message" => "code is valid"]);
+        $stmt = $conn->prepare("UPDATE coupon SET isValid = 0 WHERE coupon_code = ? AND phone = ?");
+        $stmt->bind_param("ss", $code, $phone);
+        $stmt->execute();
+
+        echo json_encode(["status" => "success", "message" => "Code is valid"]);
         exit();
-
     } else {
-        echo json_encode(["status" => "error", "message" => "code is not valid"]);
+        echo json_encode(["status" => "error", "message" => "Code is not valid"]);
         exit();
     }
-
-
 } else {
-    echo json_encode(["status" => "error", "message" => "method not allowed"]);
+    echo json_encode(["status" => "error", "message" => "Method not allowed"]);
 }
-
 
 ?>
