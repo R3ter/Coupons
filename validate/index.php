@@ -36,7 +36,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         exit();
     }
 } else {
-    echo json_encode(["status" => "error", "message" => "Method not allowed"]);
+    include './header.html';
+    ?>
+
+    <?php
 }
 
 ?>

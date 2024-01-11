@@ -2,7 +2,8 @@
 
 include "../db/db.php";
 include "./../getCouponInfo/getCouponInfo.php";
-?>
+include "./../sendMassege/sendMassage.php"
+    ?>
 
 <?php
 
@@ -65,6 +66,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 
 } else {
+    send_massege("972524161800");
     echo json_encode(["status" => "error", "message" => "method not allowed"]);
 }
 
