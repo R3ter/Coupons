@@ -1,41 +1,36 @@
 <?php
 
-function send_massege($number)
+function send_message()
 {
-    $curl = curl_init();
+    $body = array(
+        "messaging_product" => "whatsapp",
+        "recipient_type" => "individual",
+        "to" => "+972524161800", // Replace with recipient's WhatsApp phone number
+        "type" => "image",
+        "image" => array(
+            "caption" => "Your text message here", // Replace with your text message
+            "url" => "https://example.com/image.jpg" // Replace with the image URL
+        )
+    );
 
+    $curl = curl_init();
     curl_setopt_array(
         $curl,
         array(
-            CURLOPT_URL => 'https://graph.facebook.com/v17.0/219355181250875/messages',
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_ENCODING => '',
-            CURLOPT_MAXREDIRS => 10,
-            CURLOPT_TIMEOUT => 0,
-            CURLOPT_FOLLOWLOCATION => true,
-            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-            CURLOPT_CUSTOMREQUEST => 'POST',
-            CURLOPT_POSTFIELDS => '{
-            "messaging_product": "whatsapp",
-            "recipient_type":"individual",
-            "to": ' . $number . ',
-            "type": "image",
-            "image":{
-                
-                "link":"https://www.maqdisiapp.com/wp-content/uploads/2018/02/logomaqdisi113134.png"
-            }
-        }
-        ',
+
+            CURLOPT_POST => true,
             CURLOPT_HTTPHEADER => array(
                 'Content-Type: application/json',
-                'Authorization: Bearer EAAPCmakMNjABO2qYjunT4wfDL7WOP4m0ADWKTabLAl82n6zVM3e4L1ZAd7EZAaWSU6JffJGU1XOr7B4dajxa22pgGsDiQhaFdZCZBziWVmi0gL636empL0pHZA2LMCyUZAJZAJw1rnLo6lPeubDbvtFhEskv3p2LjqyHm0AD4zi0t581PrtzRhhD1Ua2FVFdZB5ZCa2kz3HmxogG8R2Y4LZBcZD'
+                'Authorization: EAAPCmakMNjABO6qBSVt1G5AVaA5avwVL0VsDmJkpTyXgn5mBM3lYHVRDNLYLBUPFzX9W0cp3RTVvq4ofx7W0lbuFL1xxZCZAsvsfxJtiYvM5JCeksyNKdWkc2ZB8o2ALEjFAXLohRTGURn9b6plB44aNSwXvWV4d6rur6fIZB3fuW8wAS6Jbpe0vQ9QrHTEis7W36L1mIN9B78ZA81q0ZD' // Replace with your token
             ),
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_POSTFIELDS => json_encode($body)
         )
     );
 
     $response = curl_exec($curl);
-
     curl_close($curl);
     return $response;
 }
+
 ?>

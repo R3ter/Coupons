@@ -66,7 +66,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 
 } else {
-    send_massege("972524161800");
+    send_message();
     echo json_encode(["status" => "error", "message" => "method not allowed"]);
 }
 
